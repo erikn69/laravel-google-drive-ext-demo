@@ -1,8 +1,8 @@
 # Laravel & Google Drive Storage
 
-## Getting your Root Folder ID
+## Getting your Team Folder ID
 
-If you want to store files in your Google Drive root directory, then the folder ID can be `null`. Else go into your Drive and create a folder.
+If you want to store files in your Google Drive Team directory, then the folder can be empty.
 
 Because Google Drive allows duplicate names, it identifies each file and folder with a unique ID. If you open your folder, you will see the **Folder ID** in the URL.
 

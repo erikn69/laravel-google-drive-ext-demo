@@ -1,27 +1,28 @@
 # Laravel & Google Drive Storage
 
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R3UQ8V)
-
-#### Demo project with Laravel 5.4
+#### Demo project with Laravel 6.X
 
 Look at the commit history to see each of the steps I have taken to set this up.
 
 ## Set up this demo project locally
 
 ```
-git clone git@github.com:ivanvermeyen/laravel-google-drive-demo.git
+git clone git@github.com:erikn69/laravel-google-drive-demo.git
+git checkout 6.x
 composer install
+cp .env.example .env
+php artisan key:generate
 ```
 
 ### I took care of this:
 
-This will also install only [one additional package](https://github.com/nao-pon/flysystem-google-drive) that is not included by Laravel out of the box:
+This will also install only [one additional package](https://github.com/masbug/flysystem-google-drive-ext) that is not included by Laravel out of the box:
 
 ```
-"nao-pon/flysystem-google-drive": "~1.1"
+"masbug/flysystem-google-drive-ext":"^1.0"
 ```
 
-I have included [GoogleDriveAdapter](app/Providers/GoogleDriveAdapter.php) and [GoogleDriveServiceProvider](app/Providers/GoogleDriveServiceProvider.php) which I have added to the `providers` array in [`config/app.php`](config/app.php), and added a `google` disk in [`config/filesystems.php`](config/filesystems.php):
+I have included [GoogleDriveServiceProvider](app/Providers/GoogleDriveServiceProvider.php) which I have added to the `providers` array in [`config/app.php`](config/app.php#L179), and added a `google` disk in [`config/filesystems.php`](config/filesystems.php#L66-L73):
 
 ```php
 'disks' => [
@@ -33,7 +34,7 @@ I have included [GoogleDriveAdapter](app/Providers/GoogleDriveAdapter.php) and [
         'clientId' => env('GOOGLE_DRIVE_CLIENT_ID'),
         'clientSecret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
         'refreshToken' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
-        'folderId' => env('GOOGLE_DRIVE_FOLDER_ID'),
+        'folder' => env('GOOGLE_DRIVE_FOLDER'),
         // 'teamDriveId' => env('GOOGLE_DRIVE_TEAM_DRIVE_ID'),
     ],
 
@@ -48,18 +49,18 @@ Detailed information on how to obtain your API ID, secret and refresh token:
 
 -   [Getting your Client ID and Secret](README/1-getting-your-dlient-id-and-secret.md)
 -   [Getting your Refresh Token](README/2-getting-your-refresh-token.md)
--   [Getting your Root Folder ID](README/3-getting-your-root-folder-id.md)
+-   [Getting your Team Folder ID](README/3-getting-your-team-folder-id.md)
 
 ## Update `.env` file
 
-Add the keys you created to your `.env` file and set `google` as your default cloud storage. You can copy the [`.env.example`](.env.example) file and fill in the blanks.
+Add the keys you created to your `.env` file and set `google` as your default cloud storage. You can copy the [`.env.example`](.env.example#L35-L40) file and fill in the blanks.
 
 ```
 FILESYSTEM_CLOUD=google
 GOOGLE_DRIVE_CLIENT_ID=xxx.apps.googleusercontent.com
 GOOGLE_DRIVE_CLIENT_SECRET=xxx
 GOOGLE_DRIVE_REFRESH_TOKEN=xxx
-GOOGLE_DRIVE_FOLDER_ID=null
+GOOGLE_DRIVE_FOLDER=folder_name
 #GOOGLE_DRIVE_TEAM_DRIVE_ID=xxx
 ```
 
@@ -71,12 +72,12 @@ If you want to use multiple Google Drive accounts in a single Laravel app, you n
 MAIN_GOOGLE_DRIVE_CLIENT_ID=xxx.apps.googleusercontent.com
 MAIN_GOOGLE_DRIVE_CLIENT_SECRET=xxx
 MAIN_GOOGLE_DRIVE_REFRESH_TOKEN=xxx
-MAIN_GOOGLE_DRIVE_FOLDER_ID=null
+MAIN_GOOGLE_DRIVE_FOLDER=
 
 BACKUP_GOOGLE_DRIVE_CLIENT_ID=xxx.apps.googleusercontent.com
 BACKUP_GOOGLE_DRIVE_CLIENT_SECRET=xxx
 BACKUP_GOOGLE_DRIVE_REFRESH_TOKEN=xxx
-BACKUP_GOOGLE_DRIVE_FOLDER_ID=null
+BACKUP_GOOGLE_DRIVE_FOLDER=
 ```
 
 Then you should add a disk in `config/filesystems.php` for each account using the `google` driver and the account specific keys:
@@ -87,7 +88,7 @@ Then you should add a disk in `config/filesystems.php` for each account using th
     'clientId' => env('MAIN_GOOGLE_DRIVE_CLIENT_ID'),
     'clientSecret' => env('MAIN_GOOGLE_DRIVE_CLIENT_SECRET'),
     'refreshToken' => env('MAIN_GOOGLE_DRIVE_REFRESH_TOKEN'),
-    'folderId' => env('MAIN_GOOGLE_DRIVE_FOLDER_ID'),
+    'folder' => env('MAIN_GOOGLE_DRIVE_FOLDER'),
 ],
 
 'backup_google' => [
@@ -95,7 +96,7 @@ Then you should add a disk in `config/filesystems.php` for each account using th
     'clientId' => env('BACKUP_GOOGLE_DRIVE_CLIENT_ID'),
     'clientSecret' => env('BACKUP_GOOGLE_DRIVE_CLIENT_SECRET'),
     'refreshToken' => env('BACKUP_GOOGLE_DRIVE_REFRESH_TOKEN'),
-    'folderId' => env('BACKUP_GOOGLE_DRIVE_FOLDER_ID'),
+    'folder' => env('BACKUP_GOOGLE_DRIVE_FOLDER'),
 ],
 ```
 
@@ -118,22 +119,19 @@ Storage::cloud(); // refers to Storage::disk('main_google')
 | --------------------- | ---------------------------------------- |
 | /put                  | Puts a new `test.txt` file to Google Drive |
 | /put-existing         | Puts an existing file to Google Drive    |
-| /list                 | Lists all files in Google Drive (root directory, not recursive by default) |
-| /list-folder-contents | List all files in a specific folder      |
+| /list-files           | Lists all files in Google Drive (root directory, not recursive by default)|
+| /list-folder-contents | List all files in a specific folder(`Test Dir`)|
+| /list-team-drives     | Lists all team drives in Google Drive |
 | /get                  | Finds and downloads the `test.txt` file from Google Drive |
 | /create-dir           | Creates a `Test Dir` directory   |
 | /create-sub-dir       | Creates a `Test Dir` directory and a `Sub Dir` sub directory |
 | /put-in-dir           | Puts a new `test.txt` file to the `Test Dir` sub directory |
-| /newest               | Puts a new file to Google Drive and then fetches it |
 | /delete               | Delete a file from Google Drive          |
 | /delete-dir           | Delete an entire directory from Google Drive |
 | /rename-dir           | Rename a directory in Google Drive       |
 | /put-get-stream       | Use a stream to store and get larger files |
 | /share                | Change permissions to share a file with the public |
-| /export/{basename}    | Export a Google doc (to PDF) |
+| /export/{filename}    | Export a Google doc (to PDF) |
 
 This is a very basic example to get you started. To see the logic behind these routes, check [`routes/web.php`](routes/web.php).
 
-## Interesting Reads
-
--   [Upload large files to S3 using Laravel 5](https://murze.be/2015/07/upload-large-files-to-s3-using-laravel-5/) by Freek Van der Herten.

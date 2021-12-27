@@ -1,19 +1,19 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "laravel/laravel-masbug-google-drive-demo",
+    "description": "Masbug google drive plugin demo for Laravel Framework.",
+    "keywords": ["framework", "laravel", "filesystem", "flysystem", "google", "google-drive", "google drive"],
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=5.6.4",
-        "laravel/framework": "6.18.*",
-        "laravel/tinker": "~1.0",
-        "nao-pon/flysystem-google-drive": "~1.1"
+        "laravel/framework": "^6.20",
+        "laravel/tinker": "^2.5",
+        "masbug/flysystem-google-drive-ext": "^1.2"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.7"
+        "fakerphp/faker": "^1.9.1",
+        "mockery/mockery": "^1.4.4",
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "classmap": [
@@ -36,12 +36,10 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
         ]
     },
     "config": {
