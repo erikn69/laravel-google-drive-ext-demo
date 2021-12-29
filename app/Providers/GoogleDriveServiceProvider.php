@@ -27,7 +27,7 @@ class GoogleDriveServiceProvider extends ServiceProvider
 
             $adapter = new \Masbug\Flysystem\GoogleDriveAdapter($service, $config['folder'] ?? '/', $options);
             $driver = new \League\Flysystem\Filesystem($adapter);
-            return new \Illuminate\Filesystem\FilesystemAdapter($driver);
+            return new \Illuminate\Filesystem\FilesystemAdapter($driver, $adapter);
         });
     }
 

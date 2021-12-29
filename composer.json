@@ -5,15 +5,24 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.3",
-        "laravel/framework": "^8.10",
-        "laravel/tinker": "^2.5",
-        "masbug/flysystem-google-drive-ext": "^1.2"
+        "php": ">=8.0",
+        "laravel/framework": "^9.0",
+        "laravel/tinker": "^2.7",
+        "masbug/flysystem-google-drive-ext": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
         "mockery/mockery": "^1.4.4",
         "phpunit/phpunit": "^9.5.10"
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+            ]
+        },
+        "google/apiclient-services": [
+            "Drive"
+        ]
     },
     "autoload": {
         "classmap": [
@@ -36,15 +45,18 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "Google\\Task\\Composer::cleanup"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "Google\\Task\\Composer::cleanup"
         ]
     },
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
-    }
+    },
+    "prefer-stable": true
 }

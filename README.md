@@ -1,6 +1,6 @@
 # Laravel & Google Drive Storage
 
-#### Demo project with Laravel 8.X
+#### Demo project with Laravel 9.X
 
 Look at the commit history to see each of the steps I have taken to set this up.
 
@@ -8,7 +8,7 @@ Look at the commit history to see each of the steps I have taken to set this up.
 
 ```
 git clone git@github.com:erikn69/laravel-google-drive-demo.git
-git checkout 8.x
+git checkout 9.x
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -19,7 +19,7 @@ php artisan key:generate
 This will also install only [one additional package](https://github.com/masbug/flysystem-google-drive-ext) that is not included by Laravel out of the box:
 
 ```
-"masbug/flysystem-google-drive-ext":"^1.0"
+"masbug/flysystem-google-drive-ext":"^2.0"
 ```
 
 I have included [GoogleDriveServiceProvider](app/Providers/GoogleDriveServiceProvider.php) which I have added to the `providers` array in [`config/app.php`](config/app.php#L179), and added a `google` disk in [`config/filesystems.php`](config/filesystems.php#L66-L73):
