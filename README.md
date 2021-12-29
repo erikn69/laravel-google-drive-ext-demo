@@ -1,6 +1,6 @@
 # Laravel & Google Drive Storage
 
-#### Demo project with Laravel 6.X
+#### Demo project with Laravel 7.X
 
 Look at the commit history to see each of the steps I have taken to set this up.
 
@@ -8,7 +8,7 @@ Look at the commit history to see each of the steps I have taken to set this up.
 
 ```
 git clone git@github.com:erikn69/laravel-google-drive-demo.git
-git checkout 6.x
+git checkout 7.x
 composer install
 cp .env.example .env
 php artisan key:generate
