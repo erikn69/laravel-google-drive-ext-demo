@@ -5,8 +5,8 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.2.5",
-        "laravel/framework": "^7.20",
+        "php": ">=7.3",
+        "laravel/framework": "^8.10",
         "laravel/tinker": "^2.5",
         "masbug/flysystem-google-drive-ext": "^1.2"
     },
