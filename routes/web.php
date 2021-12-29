@@ -35,7 +35,7 @@ Route::get('list-files', function() {
 
     //return $contents->where('type', 'dir'); // directories
     return $contents->where('type', 'file')->mapWithKeys(function($file) {
-        return [$file['display_path'] => $file['basename']];
+        return [$file->path() => pathinfo($file->path(),PATHINFO_BASENAME)];
     });
 });
 
@@ -56,7 +56,7 @@ Route::get('get', function() {
     $file = Storage::cloud()->getAdapter()->getMetadata($filename); // array with file info
 
     return response($rawData, 200)
-        ->header('ContentType', $file['mimetype'])
+        ->header('ContentType', $file->mimeType())
         ->header('Content-Disposition', "attachment; filename=$filename");
 });
 
@@ -88,7 +88,7 @@ Route::get('put-get-stream', function() {
     return response()->stream(function () use ($readStream) {
         fpassthru($readStream);
     }, 200, [
-        'Content-Type' => $file['mimetype'],
+        'Content-Type' => $file->mimeType(),
         //'Content-disposition' => 'attachment; filename='.$filename, // force download?
     ]);
 });
@@ -118,7 +118,7 @@ Route::get('list-folder-contents', function() {
     $files = collect(Storage::cloud()->listContents($folder, false));
 
     return $files->mapWithKeys(function($file) {
-        return [$file['display_path'] => $file['basename']];
+        return [$file->path() => pathinfo($file->path(),PATHINFO_BASENAME)];
     });
 });
 
@@ -160,7 +160,7 @@ Route::get('export/{filename}', function ($filename) {
     $file = Storage::cloud()->getAdapter()->getMetadata($filename);
 
     $mimeType = 'application/pdf';
-    $export = $service->files->export($file['id'], $mimeType);
+    $export = $service->files->export($file->extraMetadata()['id'], $mimeType);
 
     return response($export->getBody(), 200, [
         'Content-Type' => $mimeType,
